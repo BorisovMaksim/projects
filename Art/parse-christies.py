@@ -61,7 +61,7 @@ def parse_link(url):
     provenance_soup = soup.find(id="main_center_0_lblLotProvenance")
     img_soup = soup.find("a", class_="panzoom--link")
 
-    description = description_soap.text
+    description = "-" if description_soap is None else description_soap.text
     estimate = "-" if estimate_soap is None else estimate_soap.text
     style = "-" if style_soap is None else style_soap.text
     provenance = "-" if provenance_soup is None else provenance_soup.text
