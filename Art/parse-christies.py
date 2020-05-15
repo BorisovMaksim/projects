@@ -27,13 +27,16 @@ def get_links():
                 for link in soup.find_all('a'):
                     url_to_lot = link.get('href')
                     if url_to_lot is not None and url_to_lot.startswith('https'):
-                        response_to_lot = session.get(url_to_lot)
-                        soup = BeautifulSoup(response_to_lot.text, "lxml")
-                        sale_date_soup = soup.find(id="main_center_0_lblSaleDate")
-                        sale_date = "-" if sale_date_soup is None else dateparser.parse(sale_date_soup.text)
-                        if sale_date == dateparser.parse(row[2]):
-                            url_ok = url_to_lot
-                        break
+                        with session.get(url_to_lot, stream=True) as response_to_lot:
+                             soup = BeautifulSoup(response_to_lot.text, "lxml")
+                             sale_date_soup = soup.find(id="main_center_0_lblSaleDate")
+                             sale_date = "-" if sale_date_soup is None else dateparser.parse(sale_date_soup.text)
+                             if sale_date == dateparser.parse(row[2]):
+                                url_ok = url_to_lot
+                             break
+                        
+                            
+                       
             d["Author"].append(row[0])
             d["Art"].append(row[1])
             d["Sale date"].append(row[2])
