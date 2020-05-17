@@ -9,7 +9,7 @@ def main():
                         headers = ["Author", "Art", "Sale date", "Price", "Size",
                                    "Style", "Estimate", "Signed", "dated", "Collection",
                                    "Material", "Technique", "Painted",
-                                   "Image", "Genre", "Square", "Nazi", "Length description"]
+                                   "Image", "Genre", "Square", "Nazi", "Length description", "Evening sale"]
                         writer_1 = csv.DictWriter(write_file_1, fieldnames=headers,
                                                   extrasaction='ignore', delimiter=',')
                         writer_2 = csv.DictWriter(write_file_2, fieldnames=["Author", "Art", "Sale date", "Price", "Url", "Report"],
@@ -95,10 +95,15 @@ def main():
                                         else:
                                             collection = 1
                                 nazi = 1 if c[7].lower().count("nazi") != 0 else 0
-                                writer_1.writerow({"Author": c[0] , "Art": c[1], "Sale date": c[2], "Price": c[3].replace(",", "", 4), "Size": size,
+                                pos = style.lower().find("evening")
+                                evening_sale = 0 if pos == -1 else 1
+                                style = style if pos == -1 else style[:pos - 1]
+                                art = c[1]
+                                art = art if art.find("REPEAT") == -1 else art[:art.find("REPEAT") - 1]
+                                writer_1.writerow({"Author": c[0] , "Art": art, "Sale date": c[2], "Price": c[3].replace(",", "", 4), "Size": size,
                                    "Style": style, "Estimate": money, "Signed": signed, "dated": dated, "Collection": collection,
                                    "Material": materials , "Technique": methods, "Painted": c[11],
-                                   "Image": image, "Genre": genre, "Square": square, "Nazi": nazi, "Length description": len(c[7])})
+                                   "Image": image, "Genre": genre, "Square": square, "Nazi": nazi, "Length description": len(c[7]), "Evening sale": evening_sale})
                             elif s[10] == "Found":
                                 money_str = s[9].replace(",", "", 4)
                                 money = float(money_str) if money_str is not "-" else "-"
@@ -150,14 +155,20 @@ def main():
                                         else:
                                             collection = 1
                                 nazi = 1 if s[4].lower().count("nazi") != 0 else 0
+                                pos = style.lower().find("evening")
+                                evening_sale = 0 if pos == -1 else 1
+                                style = style if pos == -1 else style[:pos - 1]
+                                art = s[1]
+                                art = art if art.find("REPEAT") == -1 else art[:art.find("REPEAT") - 1]
+
                                 writer_1.writerow(
-                                    {"Author": s[0], "Art": s[1], "Sale date": s[2], "Price": s[3].replace(",", "", 4),
+                                    {"Author": s[0], "Art": art, "Sale date": s[2], "Price": s[3].replace(",", "", 4),
                                      "Size": size,
                                      "Style": style, "Estimate": money, "Signed": signed, "dated": dated,
                                      "Collection": collection,
                                      "Material": materials, "Technique": methods, "Painted": "-",
                                      "Image": image, "Genre": genre, "Square": square,
-                                     "Nazi": nazi, "Length description": len(s[4])})
+                                     "Nazi": nazi, "Length description": len(s[4]), "Evening sale": evening_sale})
                             else:
                                 writer_2.writerow({"Author": c[0], "Art": c[1], "Sale date": c[2], "Price": c[3],
                                                    "Url": c[13] + " and " + s[11],
